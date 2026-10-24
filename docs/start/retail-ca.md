@@ -3,7 +3,7 @@
 Этот способ меняет только CA-бандл в retail-разделе, пока колонка загружена в
 factory. Версия прошивки при этом не меняется.
 
-Подходит для колонок на **Amlogic/Buildroot** с native quasar/maind. Android-модели
+Подходит для колонок на **Amlogic/Buildroot** с нативными `quasar`/`maind`. Android-модели
 (Станция Макс, Станция первого поколения) этим способом не покрываются.
 
 Для Станции Лайт 2 (Plum) ориентиром служит дата сборки прошивки:
@@ -19,23 +19,24 @@ factory. Версия прошивки при этом не меняется.
 - после normal-загрузки файл виден как
   `/system/vendor/quasar/certs/ca-certificates.crt`.
 
-На других моделях номера MTD и UBI нужно проверить перед монтированием.
+На других моделях проверьте номера MTD и UBI перед монтированием.
 
 ## Что понадобится
 
 - Linux-хост в одной сети с колонкой;
 - [eQuasar](https://git.gay/iwakura/eQuasar/), nginx и DNS-сервер;
-- роутер, в котором можно выдать свой DNS через DHCP;
+- роутер, в настройках DHCP которого можно указать собственный DNS-сервер;
 - `adb`;
-- файл `retail-ca-certificates-with-aaa.pem`.
+- [файл `retail-ca-certificates-with-aaa.pem`](https://github.com/Marker284/yandex-station-extended/raw/main/contrib/packages/retail-ca-certificates-with-aaa.pem).
 
-## 1. Поднять eQuasar
+## 1. Установка и запуск eQuasar
 
-[eQuasar](https://git.gay/iwakura/eQuasar/) — готовый nginx MITM для Quasar.
-Он сам отвечает за `get_sync_info` с включённым network ADB и возвращает
-`{"hasUpdate":false}` на `check_updates`, а остальные запросы проксирует дальше.
+[eQuasar](https://git.gay/iwakura/eQuasar/) — готовая конфигурация nginx для
+перехвата запросов Quasar. Она отвечает за `get_sync_info` с включённым network
+ADB и возвращает `{"hasUpdate":false}` на `check_updates`, а остальные запросы
+проксирует дальше.
 
-Скачать репозиторий:
+Скачайте репозиторий:
 
 ~~~sh
 git clone https://git.gay/iwakura/eQuasar.git
@@ -51,7 +52,7 @@ sudo apt update
 sudo apt install -y nginx
 ~~~
 
-Скопировать файлы из репозитория в пути, которые использует конфигурация
+Скопируйте файлы из репозитория в пути, которые использует конфигурация
 eQuasar:
 
 ~~~sh
@@ -77,11 +78,9 @@ sudo systemctl reload nginx
 docker compose up -d --build
 ~~~
 
-Не запускайте оба варианта одновременно: оба занимают порты `80` и `443`.
+### Настройка DNS
 
-### Настроить DNS
-
-В DNS-сервере направить на IP машины с eQuasar (`<IP_EQUASAR>`):
+В настройках DNS-сервера направьте на IP машины с eQuasar (`<IP_EQUASAR>`):
 
 ~~~text
 quasar.yandex.net
@@ -89,7 +88,7 @@ quasar.yandex.ru
 scbh.yandex.net
 ~~~
 
-Следующие домены направить на `127.0.0.1` или другой недоступный адрес:
+Следующие домены направьте на `127.0.0.1` или другой недоступный адрес:
 
 ~~~text
 strm.yandex.ru
@@ -100,12 +99,12 @@ alice-ats.yandex.net
 alice-ats-test.yandex.net
 ~~~
 
-Выдать этот DNS-сервер колонке через DHCP роутера. Для доменов eQuasar не должно
+Укажите этот DNS-сервер в настройках DHCP роутера. Для доменов eQuasar не должно
 быть рабочих AAAA-записей, иначе колонка может уйти по IPv6 мимо nginx.
 
-### Проверить eQuasar до включения колонки
+### Проверка eQuasar до включения колонки
 
-Проверить ответы nginx с Linux-хоста:
+Проверьте ответы nginx с Linux-хоста:
 
 ~~~sh
 curl -sk -w '\nHTTP %{http_code}\n' \
@@ -120,7 +119,7 @@ curl -sk -w '\nHTTP %{http_code}\n' \
 HTTP 200
 ~~~
 
-Проверить включение network ADB:
+Проверьте, что network ADB включён:
 
 ~~~sh
 curl -sk --resolve quasar.yandex.net:443:<IP_EQUASAR> \
@@ -129,7 +128,7 @@ curl -sk --resolve quasar.yandex.net:443:<IP_EQUASAR> \
 
 В ответе должны быть `"remoteActivation":true` и `"network":true`.
 
-Для системного nginx смотреть логи можно так:
+Логи системного nginx можно посмотреть так:
 
 ~~~sh
 sudo tail -f /var/log/nginx/quasar.yandex.net.access.log
@@ -141,9 +140,9 @@ sudo tail -f /var/log/nginx/quasar.yandex.net.access.log
 docker compose logs -f quasar
 ~~~
 
-Оставить eQuasar запущенным на всём протяжении процедуры.
+Оставьте eQuasar запущенным на всём протяжении процедуры.
 
-## 2. Загрузить колонку в factory mode
+## 2. Загрузка колонки в factory mode
 
 Следующий способ входа в factory mode актуален для **Plum / Станции Лайт 2**.
 Для остальных колонок способ сброса и входа в factory mode нужно искать отдельно
@@ -159,12 +158,12 @@ docker compose logs -f quasar
 игнорировать, если в логе eQuasar уже видны запросы колонки, а `check_updates`
 возвращает `{"hasUpdate":false}`.
 
-Если в логах нет запросов или `check_updates` возвращает `true`, остановиться и
-исправить DNS/nginx до продолжения.
+Если в логах нет запросов или `check_updates` возвращает `true`, остановитесь и
+исправьте DNS/nginx до продолжения.
 
 Найдите IP колонки в списке клиентов роутера.
 
-## 3. Подключиться по ADB
+## 3. Подключение по ADB
 
 ~~~sh
 adb connect <IP_колонки>:5555
@@ -179,7 +178,7 @@ adb shell id
 uid=0(root)
 ~~~
 
-Передать CA-бандл во временный каталог:
+Передайте CA-бандл во временный каталог:
 
 ~~~sh
 adb push \
@@ -187,15 +186,15 @@ adb push \
   /data/local/tmp/retail-ca-certificates.crt
 ~~~
 
-## 4. Проверить разметку и подключить retail
+## 4. Проверка разметки и подключение retail
 
-Зайти в shell factory-системы:
+Войдите в shell factory-системы:
 
 ~~~sh
 adb shell
 ~~~
 
-Сначала проверить разметку:
+Сначала проверьте разметку:
 
 ~~~sh
 cat /proc/mtd
@@ -204,9 +203,9 @@ mount | grep -E 'ubi|ubifs|system|bkupgrade'
 ubinfo -a
 ~~~
 
-### Как определить MTD-номер
+### Определение MTD-номера
 
-В выводе `/proc/mtd` найди строку, имя которой — `system`:
+В выводе `/proc/mtd` найдите строку, имя которой — `system`:
 
 ~~~text
 dev:    size   erasesize  name
@@ -223,16 +222,16 @@ mtd4: ...      ...        "bkupgrade"
 ubiattach /dev/ubi_ctrl -m 3
 ~~~
 
-`bkupgrade` не является retail-системой: не выбирай его только потому, что он
+`bkupgrade` не является retail-системой: не выбирайте его только потому, что он
 есть в списке. Целевой раздел должен содержать путь
 `system/vendor/quasar/certs/ca-certificates.crt` после монтирования. Если в
 `/proc/mtd` нет строки `"system"` и назначение разделов нельзя однозначно
-определить по `mount` и `cat /proc/cmdline`, остановись и не подставляй номер
+определить по `mount` и `cat /proc/cmdline`, остановитесь и не подставляйте номер
 наугад.
 
-### Проверить уже подключённый UBI
+### Проверка уже подключённого UBI
 
-Перед `ubiattach` проверь `ubinfo -a`. Если в выводе есть блок с нужным
+Перед `ubiattach` проверьте `ubinfo -a`. Если в выводе есть блок с нужным
 `MTD device number` и томом `rootfs`, UBI уже подключён. Например:
 
 ~~~text
@@ -245,9 +244,9 @@ Name: rootfs
 В этом случае повторно выполнять `ubiattach` не нужно: номер UBI-устройства —
 `2`, и после создания точки монтирования можно сразу использовать `ubi2:rootfs`.
 
-Если нужного UBI-блока нет, подключить найденный выше MTD-раздел:
+Если нужного UBI-блока нет, подключите найденный выше MTD-раздел:
 
-Создать точку монтирования и подключить rootfs:
+Создайте точку монтирования и подключите `rootfs`:
 
 ~~~sh
 mkdir -p /mnt/retail
@@ -255,7 +254,7 @@ ubiattach /dev/ubi_ctrl -m <MTD_НОМЕР>
 ubinfo -a
 ~~~
 
-После `ubiattach` найди в его выводе строку вида:
+После `ubiattach` найдите в его выводе строку вида:
 
 ~~~text
 UBI device number 2
@@ -268,9 +267,9 @@ UBI device number 2
 mount -t ubifs -o rw ubi2:rootfs /mnt/retail
 ~~~
 
-Если у тебя выведен другой номер, замени `2` на него.
+Если у вас выведен другой номер, замените `2` на него.
 
-Проверить целевой файл и режим монтирования:
+Проверьте целевой файл и режим монтирования:
 
 ~~~sh
 TARGET=/mnt/retail/system/vendor/quasar/certs/ca-certificates.crt
@@ -286,12 +285,12 @@ mount | grep '/mnt/retail'
 mount -o remount,rw /mnt/retail
 ~~~
 
-Если remount не сработал, остановиться. Не использовать `dd`, `ubiformat`,
+Если remount не сработал, остановитесь. Не используйте `dd`, `ubiformat`,
 `erase` и запись всего MTD-раздела.
 
-## 5. Заменить CA-бандл
+## 5. Замена CA-бандла
 
-Сохранить оригинал и заменить только файл trust store:
+Сохраните оригинал и замените только файл trust store:
 
 ~~~sh
 cp -a "$TARGET" "$TARGET.orig"
@@ -301,7 +300,7 @@ chown 0:0 "$TARGET"
 sync
 ~~~
 
-Проверить результат:
+Проверьте результат:
 
 ~~~sh
 grep -c 'BEGIN CERTIFICATE' "$TARGET"
@@ -316,17 +315,17 @@ grep -a 'AAA Certificate Services' "$TARGET"
 5b62f4434ecee31e1e0dfbd57a50fce15be54c4fdfc0f4ccc4a140f0c88f68db
 ~~~
 
-Если hash не совпадает, не перезагружать колонку.
+Если хеш не совпадает, не перезагружайте колонку.
 
-## 6. Вернуться в normal/retail
+## 6. Возврат в normal/retail
 
-Проверить текущие переменные загрузчика:
+Проверьте текущие переменные загрузчика:
 
 ~~~sh
 fw_printenv upgrade_step boot_to_recovery
 ~~~
 
-Для проверенной AXG factory-конфигурации выставить normal-загрузку:
+Для проверенной AXG factory-конфигурации выставьте normal-загрузку:
 
 ~~~sh
 fw_setenv upgrade_step 1
@@ -342,9 +341,9 @@ boot_to_recovery=0
 ~~~
 
 Если переменных нет или factory-образ использует другую схему загрузки, не
-подставлять имена наугад.
+подставляйте имена наугад.
 
-Размонтировать retail и перезагрузить:
+Размонтируйте retail и перезагрузите колонку:
 
 ~~~sh
 sync
@@ -354,25 +353,25 @@ exit
 adb reboot
 ~~~
 
-## 7. Проверить normal-загрузку
+## 7. Проверка normal-загрузки
 
-После загрузки retail-системы проверить файл:
+После загрузки retail-системы проверьте файл:
 
 ~~~sh
 adb shell sha256sum /system/vendor/quasar/certs/ca-certificates.crt
 ~~~
 
-Hash должен совпадать с:
+Хеш должен совпадать с:
 
 ~~~text
 5b62f4434ecee31e1e0dfbd57a50fce15be54c4fdfc0f4ccc4a140f0c88f68db
 ~~~
 
-После проверки остановить eQuasar и вернуть обычные DNS-настройки.
+После проверки остановите eQuasar и верните обычные DNS-настройки.
 
-## Вернуть исходный CA-бандл
+## Восстановление исходного CA-бандла
 
-Загрузить колонку в factory mode, подключить retail-раздел по шагу 4 и выполнить:
+Загрузите колонку в factory mode, подключите retail-раздел по шагу 4 и выполните:
 
 ~~~sh
 TARGET=/mnt/retail/system/vendor/quasar/certs/ca-certificates.crt
@@ -385,7 +384,7 @@ mount -o remount,ro /mnt/retail
 umount /mnt/retail
 ~~~
 
-После этого снова выставить normal-загрузку:
+После этого снова выставьте normal-загрузку:
 
 ~~~sh
 fw_setenv upgrade_step 1
@@ -393,35 +392,37 @@ fw_setenv boot_to_recovery 0
 reboot
 ~~~
 
-Если `$TARGET.orig` отсутствует, не подбирать другой CA-бандл и не стирать раздел.
-Использовать [восстановление](recovery.md) для конкретной модели.
+Если `$TARGET.orig` отсутствует, не подбирайте другой CA-бандл и не стирайте раздел.
+Используйте [восстановление](recovery.md) для конкретной модели.
 
 ## Если что-то не получилось
 
 ??? failure "В factory mode колонка начала обновляться и загрузилась обычная Алиса"
-    eQuasar не перехватил запросы колонки: MITM не работает. Начать гайд заново
-    и перед повторным подключением колонки проверить, что eQuasar запущен,
+    eQuasar не перехватил запросы колонки: перехват не работает. Начните
+    инструкцию заново и перед повторным подключением колонки проверьте, что eQuasar
+    запущен,
     DNS указывает на него, а `check_updates` возвращает
     `{"hasUpdate":false}`.
 
 ??? failure "Приложение пишет «не удалось настроить Алису»"
-    Проверить лог eQuasar. В factory важны запросы Quasar и появление ADB, а не
+    Проверьте лог eQuasar. В factory важны запросы Quasar и появление ADB, а не
     финальный экран приложения.
 
 ??? failure "adb connect не работает"
-    Проверить актуальный IP после загрузки factory mode, одну LAN без AP isolation,
-    доступность портов `80`/`443` на eQuasar и DNS-подмену.
+    Проверьте актуальный IP после загрузки factory mode. Убедитесь, что компьютер
+    и колонка находятся в одной LAN без AP isolation, а порты `80`/`443` eQuasar
+    доступны и DNS-подмена работает.
 
 ??? failure "ubiattach сообщает, что устройство уже подключено"
-    Не повторять `ubiattach`. Найти существующий `ubiN:rootfs` через `ubinfo -a`.
+    Не повторяйте `ubiattach`. Найдите существующий `ubiN:rootfs` через `ubinfo -a`.
 
 ??? failure "Файл CA не найден"
-    Проверить выбранный UBI-том и путь
+    Проверьте, что в выбранном UBI-томе есть файл по пути
     `/mnt/retail/system/vendor/quasar/certs/ca-certificates.crt`. Если файла нет,
-    остановиться.
+    остановитесь.
 
 ??? failure "Retail-система загрузилась, но ADB нет"
     eQuasar должен работать на протяжении всей процедуры — от загрузки factory
     mode до получения root-доступа в retail-прошивке. Если после замены CA и
-    normal-загрузки ADB не появился, начать гайд заново и заново пройти
-    подключение через eQuasar. Не перезаписывать boot или recovery наугад.
+    normal-загрузки ADB не появился, начните инструкцию заново и повторите
+    подключение через eQuasar. Не перезаписывайте boot или recovery наугад.
