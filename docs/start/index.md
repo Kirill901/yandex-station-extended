@@ -11,4 +11,6 @@
 | 4. [Если что-то сломалось](recovery.md) | диагностика и откат | — |
 | 5. [Патч retail CA](retail-ca.md) | замена CA-бандла из factory | — |
 
+Альтернатива первому шагу: [root с Android через AliceBridge](root-android.md).
+
 Дальше — [рецепты](../recipes/index.md).
