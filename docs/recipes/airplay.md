@@ -59,7 +59,7 @@
 
 ---
 
-## Идеи со Станции 2
+## Идеи со Станции 2 { #station-2 }
 
 !!! warning "Проверено на Станции 2 (`yandex,station-midi`), на Мини 3 не проверялось"
     Ниже — не замена рецепту, а три приёма из [репозитория про Станцию 2](https://github.com/derangedabbot/yandex-station-2-airplay),
@@ -72,7 +72,7 @@ DACP для AirPlay 2 не работает: источник не присыл�
 `_dacp._tcp` (проверяется с мака: `dns-sd -B _dacp._tcp` — пусто). Рабочий механизм — plist
 на **канал событий аудио-сессии**:
 
-```
+```text
 POST /command RTSP/1.0
 Content-Type: application/x-apple-binary-plist
 
@@ -123,5 +123,4 @@ Content-Type: application/x-apple-binary-plist
 - **Свой `ALSA_CONFIG_PATH`.** Системный `alsa.conf` тянет 32-битные плагины, и musl-бинарник
   падает с `Exec format error`.
 - **mDNS рядом с `maind`** — раздел [«Свой mDNS (avahi) рядом с maind»](../internals/gotchas.md#avahi).
-  У нас решено иначе: avahi получает ровно то имя хоста, что публикует `maind`, тогда конфликта
-  PTR нет. Оба варианта рабочие, выбирать по вкусу.
+  На Станции 2 хватило того, что avahi получает ровно то имя хоста, которое публикует `maind`.

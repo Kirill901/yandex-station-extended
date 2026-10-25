@@ -12,9 +12,10 @@
 #   MEDIAD_BIN / MEDIAD_MATCH — чем и как запускается демон колонки (здесь maind --mediad);
 #   AP_PORT_7000 / AP_PORT_CONF — порты приёмника в hex: 1B58 = 7000 (AirPlay 2 до 5.6),
 #                  1388 = 5000 (5.6+, берётся из port в shairport-sync.conf);
-#   T2           — каталог, куда установлен приёмник;
+#   T2           — каталог, куда установлен приёмник (по нему ищется процесс shairport-sync);
+#   RECEIVER_START — скрипт, который запускает приёмник;
 #   LED/LED_PATTERN — подсветка кольца (уберите вызовы, если её нет);
-#   sp_pid()     — как найти процесс приёмника.
+#   zvuk_playing() — пример «свой плеер тоже держит звук»; не нужен — уберите.
 #
 # Поиск процессов — через /proc, а не ps|grep: шаблон легко совпадает с командной строкой
 # того, кто его запустил, и вы убиваете собственную сессию.
@@ -29,8 +30,8 @@ pids_matching() {
 }
 
 LOG=/data/local/tmp/audio-owner.log
-L=/data/local/opt/tools/lib/ld-musl-aarch64.so.1
 T2=/data/local/opt/airplay2
+RECEIVER_START=/data/local/bin/airplay2-daemon.sh
 MEDIAD_BIN=/system/vendor/quasar/maind
 MEDIAD_MATCH="$MEDIAD_BIN --mediad"
 AP_PORT_7000=1B58
@@ -42,7 +43,8 @@ LAST_REVIVE=0
 LED=/data/local/bin/led-lamp.sh
 LED_PATTERN=tricolor
 
-sp_pid() { ps w | awk '/[s]hairport-sync -c \/data\/local\/opt\/airplay2/ {print $1}' | head -1; }
+SP_MATCH="shairport-sync -c $T2"
+sp_pid() { pids_matching "$SP_MATCH" | head -1; }
 
 # Живая ли AirPlay-сессия: ESTABLISHED на порт приёмника. До 5.6 AirPlay 2 слушал
 # фиксированный 7000 (0x1B58) и не смотрел на port из конфига; в 5.6+ берётся порт из
@@ -142,7 +144,7 @@ revive_receiver() {
   if [ $((now - LAST_REVIVE)) -ge 60 ]; then
     LAST_REVIVE=$now
     echo "$(date): приёмник пропал — поднимаю заново" >> "$LOG"
-    /data/local/bin/airplay2-daemon.sh
+    "$RECEIVER_START"
   fi
 }
 
@@ -180,7 +182,7 @@ while :; do
       [ -x "$LED" ] && [ -f /run/led-lamp.pid ] && "$LED" stop >/dev/null 2>&1
     fi
 
-    ps w | grep -q '[s]hairport-sync -c /data/local/opt/airplay2' || revive_receiver
+    [ -n "$(sp_pid)" ] || revive_receiver
 
     if [ "$AIRPLAY_WAS_ON" = "1" ]; then
       IDLE_COUNT=$((IDLE_COUNT+1))
@@ -189,10 +191,10 @@ while :; do
         [ -x "$LED" ] && "$LED" stop >/dev/null 2>&1
         # приёмник отпускает устройство, а Алису поднимаем сразу: она нужнее,
         # приёмник всё равно вернётся в сеть за пару секунд
-        for p in $(ps w | awk '/[s]hairport-sync -c \/data\/local\/opt\/airplay2/ {print $1}'); do kill "$p" 2>/dev/null; done
+        for p in $(pids_matching "$SP_MATCH"); do kill "$p" 2>/dev/null; done
         wait_pcm_free
         start_mediad
-        nohup /data/local/bin/airplay2-daemon.sh >/dev/null 2>&1 &
+        nohup "$RECEIVER_START" >/dev/null 2>&1 &
         echo "$(date): Алиса поднята, приёмник возвращается" >> "$LOG"
         AIRPLAY_WAS_ON=0
         IDLE_COUNT=0
