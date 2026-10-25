@@ -17,11 +17,11 @@
 | Порт | Что это |
 |---|---|
 | `tcp 1961` | glagol (`glagold`) — локальный API управления |
-| `tcp 5555` | ADB (после [получения root](../start/root.md)) |
+| `tcp 5555` | ADB (после [получения root](../start/index.md#root-by-model)) |
 | `tcp 2222` | SSH, Dropbear (после [шага 2](../start/ssh.md)) |
 | `tcp 5081` | сервис прошивки (назначение не изучали) |
 | `tcp/udp 7447` | Zenoh |
-| `udp 5353` | mDNS |
+| `udp 5353` | mDNS (`maind --platformd`); свой avahi рядом — см. [Подводные камни](gotchas.md#avahi) |
 | `udp 11125` | `net_clock` |
 | `tcp 127.0.0.1:11124` | `multiroomd` |
 | `127.0.0.1:53` | локальный DNS `unbound` |
