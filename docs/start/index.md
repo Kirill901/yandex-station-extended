@@ -18,6 +18,7 @@
 | **Лайт 2 (Plum)** | [retail CA из factory](retail-ca.md) — патч CA-бандла в factory mode |
 | Станция Макс, Станция 1-го поколения | способа пока нет (Android-платформа) |
 
-Без компьютера, с Android-телефона: [AliceBridge](root-android.md).
+Без компьютера, с Android-телефона: [AliceBridge](root-android.md) — проверен на Лайт, Мини,
+Миди и Лайт 2.
 
 Дальше — [рецепты](../recipes/index.md).
