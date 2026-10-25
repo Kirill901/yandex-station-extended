@@ -68,8 +68,9 @@ start() {
   # host key lost (e.g. /data wiped) -> make a new one
   [ -s "$HK" ] || /data/opt/bin/dropbearkey -t ed25519 -f "$HK" >> "$LOG" 2>&1 || return 1
   pidof dropbear >/dev/null 2>&1 && return 0
-  # -B: root has an empty password, without it dropbear refuses the login
-  "$DB" -r "$HK" -p 2222 -B -E 2>>"$LOG"
+  # -B: root has an empty password, without it dropbear refuses the login.
+  # This build has no syslog: its messages go to stderr, i.e. to $LOG (no -E flag here).
+  "$DB" -r "$HK" -p 2222 -B 2>>"$LOG"
 }
 case "$1" in
   start)   start ;;
@@ -91,6 +92,12 @@ ssh -p 2222 root@192.168.1.120
 
 Если не пускает — смотрите лог `/data/opt/etc/dropbear/dropbear.log` (через `adb shell`) и
 перезапустите сервер: `/etc/init.d/S99zdropbear restart`.
+
+!!! note "Флага `-E` у этой сборки нет"
+    `dropbear` из `contrib/bin` собран без syslog и всегда пишет сообщения в stderr — поэтому
+    они и так попадают в `dropbear.log`. Флаг `-E` («писать в stderr вместо syslog») в такой
+    сборке не существует, и с ним сервер не запускается. Не путайте с `-e` — это другая опция
+    (передать окружение сервера в сессию), для запуска она не нужна.
 
 !!! warning "Пароля у root нет"
     Поэтому Dropbear запускается с `-B` (разрешить пустой пароль): без него вход отклоняется.
