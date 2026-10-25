@@ -20,47 +20,100 @@ BetterYAM **0.1.18** (октябрь 2026). Если что-то разошло�
 ## Что нужно
 
 - root и ADB на колонке — см. [Получение root](../start/index.md#root-by-model);
-- компьютер с `adb` ([Android Platform Tools](https://developer.android.com/tools/releases/platform-tools)):
-  Linux x86_64, macOS на Apple Silicon или Windows. Linux на ARM и Mac на Intel установщик
-  не поддерживает;
+- компьютер с `adb`: Windows 10/11 x64, Linux x86_64 или Mac на Apple Silicon;
 - колонка с 64-битным ядром (`uname -m` = `aarch64`). На Станции Стрит ядро 32-битное
   (`armv7l`), установщик её не найдёт.
 
 ## Установка
 
-Подключите колонку по ADB (по USB или `adb connect <IP>:5555`) и запустите установщик.
 Короткие адреса `hackalice.me/install.sh` и `hackalice.me/install.ps1` скачивают и запускают
-актуальный установщик из репозитория YAM:
-
-=== "Linux / macOS"
-
-    ```sh
-    curl -fsSL https://hackalice.me/install.sh | sh
-    ```
-
-    То же по прямому адресу:
-
-    ```sh
-    curl -fsSL https://raw.githubusercontent.com/nyakokitsu/yam/main/install.sh | sh
-    ```
+актуальный установщик из репозитория YAM. Прямые адреса — в
+[README YAM](https://github.com/nyakokitsu/yam#readme).
 
 === "Windows"
 
-    ```powershell
-    irm https://hackalice.me/install.ps1 | iex
-    ```
+    Нужна Windows 10 или 11 **x64**: установщик скачивает CLI только под x86_64.
 
-    То же по прямому адресу:
+    1. Поставьте `adb`. Проще всего через winget:
 
-    ```powershell
-    irm https://raw.githubusercontent.com/nyakokitsu/yam/main/install.ps1 | iex
-    ```
+        ```powershell
+        winget install Google.PlatformTools
+        ```
 
-    Версия и удаление CLI (yamd на колонке Windows-установщик не удаляет):
+        Или вручную: скачайте
+        [Platform Tools](https://developer.android.com/tools/releases/platform-tools),
+        распакуйте, например, в `C:\platform-tools` и добавьте эту папку в `Path`
+        («Параметры → Система → О системе → Дополнительные параметры системы →
+        Переменные среды»). Откройте **новое** окно PowerShell и проверьте `adb version`.
+        Установщик ищет `adb` в `Path`. Без него CLI поставится, но `yamd` на колонку
+        не попадёт.
+
+    2. Подключите колонку по ADB:
+
+        ```powershell
+        adb connect 192.168.1.120:5555   # IP вашей колонки
+        adb devices                      # должна быть строка «192.168.1.120:5555  device»
+        ```
+
+        Если колонка не подключена, установщик сам спросит IP.
+
+    3. Запустите установщик в обычном PowerShell, права администратора не нужны:
+
+        ```powershell
+        irm https://hackalice.me/install.ps1 | iex
+        ```
+
+        CLI ставится в `%LOCALAPPDATA%\YAM\bin`, папка добавляется в `Path`, а адрес
+        колонки сохраняется в переменной `YAM_URL`.
+
+    4. Проверьте: в том же окне `yam` работает сразу, в новых окнах — тоже.
+
+        ```powershell
+        yam device
+        yam install nano
+        ```
+
+        Веб-панель — `http://192.168.1.120:8099` в браузере.
+
+    Конкретная версия и удаление CLI:
 
     ```powershell
     & ([scriptblock]::Create((irm https://hackalice.me/install.ps1))) -Version 0.1.13
     & ([scriptblock]::Create((irm https://hackalice.me/install.ps1))) -Uninstall
+    ```
+
+    `-Uninstall` в Windows-установщике удаляет только CLI на компьютере. `yamd` с колонки
+    уберите вручную:
+
+    ```powershell
+    adb shell "kill `$(cat /data/quazar/yam/yamd.pid); rm -rf /data/quazar/yam"
+    ```
+
+=== "Linux / macOS"
+
+    Нужен Linux x86_64 или Mac на Apple Silicon. Linux на ARM и Mac на Intel установщик
+    не поддерживает.
+
+    1. Поставьте `adb`: `sudo apt install adb` (Debian/Ubuntu),
+       `brew install android-platform-tools` (macOS) или
+       [Platform Tools](https://developer.android.com/tools/releases/platform-tools).
+    2. Подключите колонку: `adb connect <IP>:5555`, затем `adb devices`.
+    3. Запустите установщик:
+
+        ```sh
+        curl -fsSL https://hackalice.me/install.sh | sh
+        ```
+
+    4. Проверьте `yam device` и откройте `http://<IP колонки>:8099`.
+
+    CLI ставится в `~/.local/bin/yam`. Если команда не находится, добавьте папку в `PATH`:
+    `export PATH="$HOME/.local/bin:$PATH"` в `~/.bashrc` или `~/.zshrc`.
+
+    Конкретная версия и удаление (CLI и `yamd` на колонке):
+
+    ```sh
+    curl -fsSL https://hackalice.me/install.sh | sh -s -- 0.1.13
+    curl -fsSL https://hackalice.me/install.sh | sh -s -- --uninstall
     ```
 
 Что делает установщик:
@@ -68,20 +121,8 @@ BetterYAM **0.1.18** (октябрь 2026). Если что-то разошло�
 1. Находит колонки в `adb devices` с `aarch64`. Если их несколько — спрашивает номер, если
    ни одной — спрашивает IP и подключается к `<IP>:5555`.
 2. Скачивает последний релиз и сверяет SHA-256 с `SHA256SUMS` из того же релиза.
-3. Ставит CLI в `~/.local/bin/yam` с адресом колонки (`YAM_URL=http://<IP>:8099`).
+3. Ставит CLI на компьютер и запоминает адрес колонки (`YAM_URL=http://<IP>:8099`).
 4. Копирует `yamd` в `/data/quazar/yam/bin` (именно `quazar`, через `z`) и запускает его.
-
-После этого откройте `http://<IP колонки>:8099`.
-
-Конкретная версия и удаление:
-
-```sh
-curl -fsSL https://hackalice.me/install.sh | sh -s -- 0.1.13       # версия
-curl -fsSL https://hackalice.me/install.sh | sh -s -- --uninstall  # удалить CLI и yamd
-```
-
-Если `yam` не находится — добавьте `~/.local/bin` в `PATH`
-(`export PATH="$HOME/.local/bin:$PATH"` в `~/.bashrc` или `~/.zshrc`).
 
 ### Автозапуск после перезагрузки { #autostart }
 
