@@ -4,7 +4,7 @@
 
 | Рецепт | Что даёт | Модели |
 |---|---|---|
-| [USB Host (OTG)](usb-host.md) | флешки и SSD, USB-Ethernet, USB-наушники/ЦАП через хаб | Лайт |
+| [USB Host (OTG)](usb-host.md) | флешки и SSD, USB-Ethernet, USB-наушники/ЦАП через хаб | Лайт, Станция 2 |
 | [AirPlay](airplay.md) | колонка как приёмник AirPlay 2 | проверено на Мини 3 |
 | [Свои звуки](sounds.md) | проигрывание файлов и потоков, звук при включении | все Amlogic |
 | [Fastfetch](fastfetch.md) | информер с логотипом Алисы | все `aarch64` |
