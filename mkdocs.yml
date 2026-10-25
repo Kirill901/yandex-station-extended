@@ -107,6 +107,7 @@ nav:
       - 1. Получение root:
           - DNS-метод (большинство моделей): start/root.md
           - Лайт 2 — retail CA из factory: start/retail-ca.md
+          - Мини 3 — retail CA и маркеры: start/retail-ca-mini3.md
           - С Android (AliceBridge): start/root-android.md
       - 2. SSH и обновления: start/ssh.md
       - 3. Пакеты yse: start/packages.md

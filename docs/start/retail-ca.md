@@ -12,6 +12,7 @@
     Принцип годится для колонок на **Amlogic/Buildroot** с нативными `quasar`/`maind`, но
     проверен только на Лайт 2: вход в factory mode и номера MTD/UBI у других моделей нужно
     уточнять. Android-модели (Станция Макс, Станция первого поколения) так не открываются.
+    Для Мини 3 есть свой вариант — [retail CA и маркеры из factory](retail-ca-mini3.md).
     Для остальных Buildroot-моделей основной способ — [DNS-метод](root.md).
 
 Для Plum в проверенной разметке:
@@ -308,7 +309,7 @@ sync
 ~~~sh
 grep -c 'BEGIN CERTIFICATE' "$TARGET"
 sha256sum "$TARGET"
-grep -a 'AAA Certificate Services' "$TARGET"
+grep -c 'MIIEMjCCAxqgAwIBAgIBATANBgkqhkiG9w0BAQUFADB7MQswCQYDVQQGEwJHQjEb' "$TARGET"   # корень AAA: 1
 ~~~
 
 Проверка выполняется уже по файлу, записанному в retail-раздел. Ожидается `123`
