@@ -60,17 +60,21 @@ cat > /etc/init.d/S99zdropbear <<'EOF'
 #!/bin/sh
 # Autostart dropbear SSH on :2222 (delete this file to remove).
 DB=/data/opt/bin/dropbear
-HK=/data/opt/etc/dropbear/hk_ed25519
-LOG=/data/opt/etc/dropbear/dropbear.log
+DIR=/data/opt/etc/dropbear
+HK=$DIR/hk_ed25519
+LOG=$DIR/dropbear.log
+start() {
+  [ -x "$DB" ] || { echo "$(date) no $DB" >> "$LOG"; return 1; }
+  # host key lost (e.g. /data wiped) -> make a new one
+  [ -s "$HK" ] || /data/opt/bin/dropbearkey -t ed25519 -f "$HK" >> "$LOG" 2>&1 || return 1
+  pidof dropbear >/dev/null 2>&1 && return 0
+  # -B: root has an empty password, without it dropbear refuses the login
+  "$DB" -r "$HK" -p 2222 -B -E 2>>"$LOG"
+}
 case "$1" in
-  start)
-    if [ -x "$DB" ] && [ -f "$HK" ]; then
-      pidof dropbear >/dev/null 2>&1 || "$DB" -r "$HK" -p 2222 -E 2>>"$LOG"
-    fi
-    ;;
-  stop)
-    killall dropbear 2>/dev/null
-    ;;
+  start)   start ;;
+  stop)    killall dropbear 2>/dev/null ;;
+  restart) killall dropbear 2>/dev/null; sleep 1; start ;;
 esac
 exit 0
 EOF
@@ -79,13 +83,17 @@ sync; mount -o remount,ro /
 /etc/init.d/S99zdropbear start
 ```
 
-Подключение:
+Подключение (пароль пустой — просто Enter):
 
 ```sh
 ssh -p 2222 root@192.168.1.120
 ```
 
+Если не пускает — смотрите лог `/data/opt/etc/dropbear/dropbear.log` (через `adb shell`) и
+перезапустите сервер: `/etc/init.d/S99zdropbear restart`.
+
 !!! warning "Пароля у root нет"
+    Поэтому Dropbear запускается с `-B` (разрешить пустой пароль): без него вход отклоняется.
     Войти может любой в вашей локальной сети. Не открывайте порты 2222 и 5555 наружу и не
     держите колонку в недоверенной сети.
 
