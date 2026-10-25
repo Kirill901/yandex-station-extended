@@ -29,8 +29,8 @@ BetterYAM **0.1.18** (октябрь 2026). Если что-то разошло�
 ## Установка
 
 Подключите колонку по ADB (по USB или `adb connect <IP>:5555`) и запустите установщик.
-Короткий адрес `hackalice.me/install.sh` скачивает и запускает актуальный `install.sh`
-из репозитория YAM:
+Короткие адреса `hackalice.me/install.sh` и `hackalice.me/install.ps1` скачивают и запускают
+актуальный установщик из репозитория YAM:
 
 === "Linux / macOS"
 
@@ -47,7 +47,20 @@ BetterYAM **0.1.18** (октябрь 2026). Если что-то разошло�
 === "Windows"
 
     ```powershell
+    irm https://hackalice.me/install.ps1 | iex
+    ```
+
+    То же по прямому адресу:
+
+    ```powershell
     irm https://raw.githubusercontent.com/nyakokitsu/yam/main/install.ps1 | iex
+    ```
+
+    Версия и удаление CLI (yamd на колонке Windows-установщик не удаляет):
+
+    ```powershell
+    & ([scriptblock]::Create((irm https://hackalice.me/install.ps1))) -Version 0.1.13
+    & ([scriptblock]::Create((irm https://hackalice.me/install.ps1))) -Uninstall
     ```
 
 Что делает установщик:
