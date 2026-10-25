@@ -119,6 +119,7 @@ nav:
       - Свои звуки: recipes/sounds.md
       - Fastfetch: recipes/fastfetch.md
       - Подсветка: recipes/led.md
+      - YAM и BetterYAM: recipes/yam.md
       - Своя LLM вместо Алисы: recipes/llm.md
       - Колонка без Яндекса: recipes/standalone.md
   - Устройства:

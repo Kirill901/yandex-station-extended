@@ -24,7 +24,8 @@
 
 -   :material-lightbulb-on: **[Рецепты](recipes/index.md)**
 
-    USB Host (флешки, Ethernet, наушники), AirPlay, свои звуки, Fastfetch, подсветка.
+    USB Host (флешки, Ethernet, наушники), AirPlay, свои звуки, Fastfetch, подсветка,
+    плагины [YAM](recipes/yam.md).
 
 -   :material-speaker: **[Устройства](devices/index.md)**
 

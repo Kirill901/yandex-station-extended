@@ -10,6 +10,9 @@
 
 Всё ставится в `/data/opt`, системные файлы не трогаются.
 
+Тот же реестр `.yap` использует [YAM](../recipes/yam.md) — менеджер плагинов с веб-панелью
+и API к железу колонки, которым управляют с компьютера.
+
 ## Установка
 
 [:material-download: Скачать `yse`](https://github.com/Marker284/yandex-station-extended/raw/main/contrib/bin/yse){ .md-button .md-button--primary }
