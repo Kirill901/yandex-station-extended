@@ -41,7 +41,7 @@ ota key     : подменён
 
 ## 2. Поставьте SSH (Dropbear) { #dropbear }
 
-Статический `dropbear` под `aarch64` лежит в репозитории, в [`contrib/bin/`](https://github.com/Marker284/yandex-station-extended/tree/main/contrib/bin).
+Статический `dropbear` (32-битный ARM, armhf) лежит в репозитории, в [`contrib/bin/`](https://github.com/Marker284/yandex-station-extended/tree/main/contrib/bin).
 
 ```sh
 adb shell mkdir -p /data/opt/bin /data/opt/etc/dropbear

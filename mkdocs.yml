@@ -140,3 +140,4 @@ nav:
       - Подводные камни: internals/gotchas.md
       - Сборка софта: internals/toolchain.md
   - Как дополнять вики: contributing.md
+  - Участники: contributors.md

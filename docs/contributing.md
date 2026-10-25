@@ -87,3 +87,5 @@ python3 -m venv venv
 ./venv/bin/mkdocs serve
 ```
 Сайт с live-reload откроется на `http://127.0.0.1:8000`.
+
+Все, чьи правки и данные вошли в вики, перечислены на странице [Участники](contributors.md).
