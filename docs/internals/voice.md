@@ -116,6 +116,8 @@ ASR: `shortRecognizerModel: quasar-general`, промежуточные гипо
   из облака это делает `AliceResponse.TtsSpeak`.
 - **Подмена адреса**: пиннинга сертификатов нет (см. [Подводные камни](gotchas.md)),
   `uniProxyUrl` можно увести на свой сервер, в том числе по `ws://` без TLS.
+- **Рабочий пример** — [quasard](../recipes/llm.md#quasard): свой uniproxy (JSON и protobuf
+  `AAPI`), ASR, LLM и TTS вместо облака.
 
 !!! warning "Приватность"
     Колонка постоянно держит соединение с облаком, а для «beta»-групп может отправлять случайные
