@@ -43,7 +43,8 @@
 | Лайт, Мини, Мини 2, Миди, Станция 2, Стрит, Умный хаб | ✅ проверено |
 | Мини 3 (bergamot) | ✅ [retail CA и маркеры из factory](start/retail-ca-mini3.md) |
 | Лайт 2 (Plum) | ✅ [retail CA из factory](start/retail-ca.md) |
-| Станция Макс, Станция 1-го поколения | ❌ Android |
+| Станция 1-го поколения | ✅ [AliceBridge](start/root-android.md#station-1) |
+| Станция Макс | ❌ Android |
 
 Подробнее — в [каталоге устройств](devices/index.md#support-matrix).
 
