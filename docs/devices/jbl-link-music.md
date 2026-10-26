@@ -1,4 +1,4 @@
-# JBL Link Music (с Алисой)
+# JBL Link Music && JBL Link Portable (с Алисой)
 
 Колонка **JBL Link Music** со встроенной Алисой. Внутри другой мир, чем у Станций: SoC
 **MediaTek** (`mediatek,mt8167`, платформа `aud8516`), **32-битное** ядро 4.4 и **Yocto** с
@@ -11,8 +11,9 @@ systemd вместо Buildroot. Поверх — тот же quasar/`maind`.
 
 [ADB по USB на старте](../start/root-jbl-link-music.md): после включения ADB по USB
 несколько секунд работает с root. В это окно ставятся маркеры, после которых ADB работает по
-сети (`5555`) и переживает перезагрузку. Нужен только кабель Micro-USB — сервисный разъём
+сети (`5555`) и переживает перезагрузку. Для Link Music нужен кабель Micro-USB — сервисный разъём 
 под резиновой подложкой на дне.
+Для Link Portable нужен кабель Type-C - подключение в штатный разъем для зарядки.
 
 В [AliceBridge](../start/root-android.md) есть профиль `jbl_link_music`, но полный проход на
 этой модели не проверен.
@@ -95,6 +96,19 @@ systemd вместо Buildroot. Поверх — тот же quasar/`maind`.
 | `00-09` | `DL2_Playback` | воспроизведение |
 | `00-10` | `ULM_Capture` | захват |
 | `00-11` | `SPDIF_OUT Playback` | воспроизведение, S/PDIF |
+
+## Контролер питания (для Portable) 
+'/sys/class/power_supply/BQ25601_CHARGER/uevent'
+```
+POWER_SUPPLY_NAME=BQ25601_CHARGER
+POWER_SUPPLY_CHARGE_TYPE=N/A
+POWER_SUPPLY_CHARGE_ENABLED=1
+POWER_SUPPLY_STATUS=Discharging
+POWER_SUPPLY_MODEL_NAME=bq25601-charger
+POWER_SUPPLY_MANUFACTURER=texas instruments
+POWER_SUPPLY_SERIAL_NUMBER=1234567890
+POWER_SUPPLY_CAPACITY=98
+POWER_SUPPLY_TEMP=32```
 
 ## Прошивка
 
