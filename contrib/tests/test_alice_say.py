@@ -18,9 +18,10 @@ HELLO_FRAME = bytes.fromhex(
     'd09fd180d0b8d0b2d0b5d182211001e80fd201')
 
 
-def event(kind):
+def event(kind, tag=3):
+    """Build an incoming frame; aliced tags pushed frames with 253=3, requests use 210."""
     remote = say.byte_field(18, say.integer(1, kind))
-    payload = say.byte_field(252, remote) + say.integer(253, 210)
+    payload = say.byte_field(252, remote) + say.integer(253, tag)
     return len(payload).to_bytes(4, 'little') + payload
 
 
@@ -100,6 +101,14 @@ class Client(unittest.IsolatedAsyncioTestCase):
         self.assertIn('подтвердила завершение', output.getvalue())
         self.assertTrue(process.stdin.closed)
         self.assertEqual(process.returncode, 0)
+
+    async def test_frames_tagged_as_requests_are_not_read_as_events(self):
+        process = Process(event(6, tag=210) + event(1, tag=210), eof=False)
+        with patch.object(say.asyncio, 'create_subprocess_exec',
+                          AsyncMock(return_value=process)):
+            with contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaises(TimeoutError):
+                    await say.speak('alice', 'test', .01)
 
     async def test_native_error_does_not_dump_the_private_payload(self):
         process = Process(event(4))

@@ -23,6 +23,7 @@
 | [@ciphermoth-byte](https://github.com/ciphermoth-byte) | [Станция 3 (orion)](devices/station-3.md): сетевая разведка, проверка DNS-метода ([#25](https://github.com/Marker284/yandex-station-extended/pull/25), [#24](https://github.com/Marker284/yandex-station-extended/issues/24)) |
 | [@denisbut1212](https://github.com/denisbut1212) | [DNS на OpenWrt](start/root.md#dns-unlock) только для доменов активации (Podkop), команды отката ([#26](https://github.com/Marker284/yandex-station-extended/pull/26)) |
 | [@garenal1v3](https://github.com/garenal1v3) | [Директивы и capabilities](internals/directives.md): legacy и typed, `PayloadRaw` ([#27](https://github.com/Marker284/yandex-station-extended/pull/27)) |
+| [@rison1337](https://github.com/rison1337) | [голосовой режим сайта ChatGPT](recipes/llm.md#chatgpt-web), [обработанный микрофон VQE](recipes/microphone.md), [озвучка текста через `START_VOCALIZE`](recipes/sounds.md#native-tts) и `contrib/alice-say.py`, [подсветка Лайт 2 / Plum](recipes/led.md#plum-led) ([#36](https://github.com/Marker284/yandex-station-extended/pull/36)) |
 | [@ramory-l](https://github.com/ramory-l) | [Мини 3: retail CA из factory](start/retail-ca-mini3.md): resolver для `/register` в eQuasar, factory-4, хеш CA по сборкам, ADB после возврата DNS, DNS на Keenetic ([#31](https://github.com/Marker284/yandex-station-extended/pull/31)); [заметка по macOS и adb](internals/toolchain.md#adb-install) ([#31](https://github.com/Marker284/yandex-station-extended/pull/31)) |
 
 ## Данные для страниц моделей

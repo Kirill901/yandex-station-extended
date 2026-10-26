@@ -6,6 +6,10 @@ Protocol checked on Lite 2 YNDX-00028 / Plum,
 firmware 0.369.1.50.4794654278.20261021.133.
 Adapted from the say.py helper in rison1337/Alisa-ChatGPT-voice-assistant.
 No installation, firmware edits or rollback needed; run while Alice is idle.
+
+The request frame is byte-identical to the helper verified on Plum. Waiting for the
+TTS events (the subscription frame, field 18 and the event codes below) has not been
+rerun on a station: treat a timeout as "no confirmation", not as "Alice stayed silent".
 """
 import argparse
 import asyncio
@@ -108,7 +112,8 @@ async def speak(host, text, timeout):
                 if not 0 < size <= 512 * 1024:
                     raise ValueError('Некорректный размер ответа колонки.')
                 envelope = fields(await proc.stdout.readexactly(size))
-                if envelope.get(253) != 210:
+                # Requests carry 253=210; frames pushed back by aliced carry 253=3.
+                if envelope.get(253) != 3:
                     continue
                 remote = fields(envelope.get(252, b''))
                 if 18 not in remote:
