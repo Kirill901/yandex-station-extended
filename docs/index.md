@@ -11,7 +11,7 @@
 <span class="tg-banner__icon">:fontawesome-brands-telegram:</span>
 <div class="tg-banner__text" markdown>
 **Чат сообщества в Telegram**<br>
-Вопросы, помощь с root, свежие находки и прошивки — обсуждаем в [@hackalice](https://t.me/hackalice).
+Находки, новости и обсуждение проекта — в [@hackalice](https://t.me/hackalice).
 </div>
 [Открыть чат](https://t.me/hackalice){ .md-button .md-button--primary .tg-banner__button }
 </div>
