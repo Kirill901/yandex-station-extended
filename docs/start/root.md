@@ -63,99 +63,115 @@
 
     ### 3. Включите DNS `179.254.167.126` на роутере
 
-    Основной DNS — `179.254.167.126`, **второй DNS оставьте пустым**.
+    Колонка должна получить DNS `179.254.167.126`. Выберите свой роутер:
 
-    **Keenetic**
-    **Веб-интерфейс:** «Сетевые правила» → «Домашняя сеть» → «Параметры IP и DHCP» →
-    **DNS 1** = `179.254.167.126`, поле **DNS 2** очистите → «Сохранить».
+    === "Keenetic"
 
-    **Или CLI** (подменяет только нужный домен):
-    ```text
-    ip host quasar.yandex.net 179.254.167.126
-    system configuration save
-    ```
+        **Веб-интерфейс:** «Сетевые правила» → «Домашняя сеть» → «Параметры IP и DHCP» →
+        **DNS 1** = `179.254.167.126`, поле **DNS 2** очистите → «Сохранить».
 
-    **OpenWrt**
+        **Или CLI** — подменяет только нужный домен, остальная сеть не затронута:
 
-    **Способ 1. Перенаправление всех DNS-запросов (DNAT)**
+        ```text
+        ip host quasar.yandex.net 179.254.167.126
+        system configuration save
+        ```
 
-    !!! warning "Влияние DNAT на остальные устройства"
-        Это правило перехватывает DNS-запросы всей LAN и может нарушить работу Podkop
-        и других настроек DNS. Для таких сетей используйте способ 2 ниже.
-        Выберите один способ: перед переходом со способа 1 на способ 2 удалите
-        правило `Quasar-Unlock` в LuCI и примените изменения.
+        Откат после шага 2 — верните прежние DNS в веб-интерфейсе или выполните
+        `no ip host quasar.yandex.net` и `system configuration save`.
 
-    Завернуть DNS-запросы из LAN на сервер разблокировки:
-    ```sh
-    uci add firewall redirect
-    uci set firewall.@redirect[-1].name='Quasar-Unlock'
-    uci set firewall.@redirect[-1].src='lan'
-    uci set firewall.@redirect[-1].proto='tcp udp'
-    uci set firewall.@redirect[-1].src_dport='53'
-    uci set firewall.@redirect[-1].dest_ip='179.254.167.126'
-    uci set firewall.@redirect[-1].dest_port='53'
-    uci set firewall.@redirect[-1].target='DNAT'
-    uci commit firewall && /etc/init.d/firewall reload
-    ```
+    === "OpenWrt"
 
-    <a id="rollback-openwrt-dnat"></a>
+        Команды выполняются по SSH на роутере. Выберите **один** способ:
 
-    **Откат способа 1 после шага 2:** удалите перенаправление `Quasar-Unlock`
-    по имени и примените изменения. Повторный поиск после каждого удаления учитывает
-    изменение индексов UCI, если правило было добавлено несколько раз.
-    Цикл удаления проверен через `sh -n`; на роутере отдельно не выполнялся:
+        === "Только домены активации (рекомендуется)"
 
-    ```sh
-    while :; do
-        section="$(
-            uci show firewall |
-                sed -n "s/^\(firewall\.[^.]*\)\.name='Quasar-Unlock'$/\1/p" |
-                head -n 1
-        )"
-        [ -n "$section" ] || break
-        uci delete "$section" || break
-    done
-    uci commit firewall && /etc/init.d/firewall reload
-    ```
+            Пересылка в dnsmasq только для трёх доменов. Остальные запросы обслуживаются
+            как обычно, в том числе через Podkop:
 
-    **Способ 2. Пересылка DNS только для доменов активации**
+            ```sh
+            uci add_list dhcp.@dnsmasq[0].server='/quasar.yandex.net/179.254.167.126'
+            uci add_list dhcp.@dnsmasq[0].server='/quasar.yandex.ru/179.254.167.126'
+            uci add_list dhcp.@dnsmasq[0].server='/scbh.yandex.net/179.254.167.126'
+            uci commit dhcp && /etc/init.d/dnsmasq reload
+            ```
 
-    Добавьте в dnsmasq пересылку запросов для трёх доменов. Остальные домены продолжат
-    обслуживаться через текущие DNS-серверы роутера, в том числе через Podkop.
-    Команды выполняются по SSH на роутере:
+            Правила действуют для этих доменов и их поддоменов у всех клиентов dnsmasq,
+            а не только у колонки. Запросы клиентов напрямую к другим DNS-серверам этот
+            способ не перехватывает.
 
-    ```sh
-    uci add_list dhcp.@dnsmasq[0].server='/quasar.yandex.net/179.254.167.126'
-    uci add_list dhcp.@dnsmasq[0].server='/quasar.yandex.ru/179.254.167.126'
-    uci add_list dhcp.@dnsmasq[0].server='/scbh.yandex.net/179.254.167.126'
-    uci commit dhcp && /etc/init.d/dnsmasq reload
-    ```
+            Проверено на OpenWrt 24.10.5 с Podkop: Мини 2, прошивка
+            `0.369.1.46.4793643989.20261020.299`, и Миди, прошивка
+            `0.369.1.46.4778262955.20261013.160`.
 
-    Правила действуют для указанных доменов и их поддоменов у всех клиентов этого
-    экземпляра dnsmasq, а не только у колонки. Обращения клиентов напрямую к другим
-    DNS-серверам этот способ не перехватывает.
+            <a id="rollback-openwrt-domains"></a>
 
-    Проверено на OpenWrt 24.10.5 с Podkop: Мини 2, прошивка
-    `0.369.1.46.4793643989.20261020.299`, и Миди, прошивка
-    `0.369.1.46.4778262955.20261013.160`.
+            **Откат после шага 2** — удалите только добавленные записи:
 
-    <a id="rollback-openwrt-domains"></a>
+            ```sh
+            uci -q del_list dhcp.@dnsmasq[0].server='/quasar.yandex.net/179.254.167.126'
+            uci -q del_list dhcp.@dnsmasq[0].server='/quasar.yandex.ru/179.254.167.126'
+            uci -q del_list dhcp.@dnsmasq[0].server='/scbh.yandex.net/179.254.167.126'
+            uci commit dhcp && /etc/init.d/dnsmasq reload
+            ```
 
-    **Откат способа 2 после шага 2:** удалите только добавленные записи:
+        === "Все DNS-запросы (DNAT)"
 
-    ```sh
-    uci -q del_list dhcp.@dnsmasq[0].server='/quasar.yandex.net/179.254.167.126'
-    uci -q del_list dhcp.@dnsmasq[0].server='/quasar.yandex.ru/179.254.167.126'
-    uci -q del_list dhcp.@dnsmasq[0].server='/scbh.yandex.net/179.254.167.126'
-    uci commit dhcp && /etc/init.d/dnsmasq reload
-    ```
+            !!! warning "Затрагивает всю сеть"
+                Правило заворачивает DNS-запросы всей LAN и может сломать Podkop и другие
+                настройки DNS. В таких сетях используйте пересылку только доменов активации.
+                Перед переходом на неё удалите правило `Quasar-Unlock` (откат ниже).
 
-    **Раздача с Android**
-    Если роутер не даёт менять DNS:
+            ```sh
+            uci add firewall redirect
+            uci set firewall.@redirect[-1].name='Quasar-Unlock'
+            uci set firewall.@redirect[-1].src='lan'
+            uci set firewall.@redirect[-1].proto='tcp udp'
+            uci set firewall.@redirect[-1].src_dport='53'
+            uci set firewall.@redirect[-1].dest_ip='179.254.167.126'
+            uci set firewall.@redirect[-1].dest_port='53'
+            uci set firewall.@redirect[-1].target='DNAT'
+            uci commit firewall && /etc/init.d/firewall reload
+            ```
 
-    1. Раздайте Wi-Fi с одного телефона.
-    2. На раздающем телефоне поставьте **DNS Changer** и задайте `179.254.167.126`.
-    3. Привязывайте колонку с **другого** телефона к этой точке доступа.
+            <a id="rollback-openwrt-dnat"></a>
+
+            **Откат после шага 2** — удалите все правила `Quasar-Unlock`, даже если правило
+            добавляли несколько раз. Цикл проверен через `sh -n`, на роутере отдельно
+            не выполнялся:
+
+            ```sh
+            while :; do
+                section="$(
+                    uci show firewall |
+                        sed -n "s/^\(firewall\.[^.]*\)\.name='Quasar-Unlock'$/\1/p" |
+                        head -n 1
+                )"
+                [ -n "$section" ] || break
+                uci delete "$section" || break
+            done
+            uci commit firewall && /etc/init.d/firewall reload
+            ```
+
+    === "Другой роутер"
+
+        В настройках локальной сети найдите DNS-серверы, которые роутер раздаёт по DHCP:
+        **DNS 1** = `179.254.167.126`, **DNS 2** — пусто. Обычно это раздел
+        «Локальная сеть» / «LAN» → «DHCP-сервер» (Asus, TP-Link и другие).
+
+        Если DNS там задаётся только для подключения к провайдеру (WAN), это не подойдёт:
+        используйте раздачу с Android.
+
+        Откат после шага 2 — верните прежние значения (обычно поле оставляют пустым или
+        ставят IP роутера).
+
+    === "Раздача с Android"
+
+        Если роутер не даёт менять DNS:
+
+        1. Раздайте Wi-Fi с одного телефона.
+        2. На раздающем телефоне поставьте **DNS Changer** и задайте `179.254.167.126`.
+        3. Привязывайте колонку с **другого** телефона к этой точке доступа.
 
     ### 4. Подключите колонку к Wi-Fi
 
@@ -178,12 +194,11 @@
 
     ### 7. Верните обычный DNS { #restore-dns }
 
-    После шага 2 уберите `179.254.167.126` из настроек роутера. Доступ сохранится.
+    После шага 2 уберите `179.254.167.126` из настроек роутера — команды отката есть на
+    вкладке вашего роутера в шаге 3. Доступ сохранится.
 
-    Для OpenWrt выполните откат выбранного способа:
-
-    - [Способ 1 — удалить перенаправление DNS (DNAT)](#rollback-openwrt-dnat).
-    - [Способ 2 — удалить пересылку DNS для доменов активации](#rollback-openwrt-domains).
+    - OpenWrt: [только домены активации](#rollback-openwrt-domains) или
+      [DNAT](#rollback-openwrt-dnat).
 
 === "Вариант 2. Свой стенд на ПК"
 
@@ -285,7 +300,8 @@
     ### 4. Включите DNS на роутере
 
     DNS 1 = **IP компьютера со стендом**, DNS 2 — пусто. Способы те же, что в
-    [варианте 1](#dns-unlock): веб-интерфейс роутера, `ip host` на Keenetic, DNAT на OpenWrt.
+    [варианте 1](#dns-unlock) (вкладки шага 3), только вместо `179.254.167.126` — IP
+    компьютера.
 
     Проверка с ПК:
 

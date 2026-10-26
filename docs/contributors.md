@@ -21,6 +21,8 @@
 | [@skrashevich](https://github.com/skrashevich) | [Quasar Bridge](recipes/llm.md#quasar-bridge) — своя LLM и Home Assistant с облачным голосом Алисы ([#22](https://github.com/Marker284/yandex-station-extended/pull/22)) |
 | [@SCP2609](https://github.com/SCP2609) | ссылка на [BetterYAM](recipes/yam.md#betteryam) ([#23](https://github.com/Marker284/yandex-station-extended/pull/23)) |
 | [@ciphermoth-byte](https://github.com/ciphermoth-byte) | [Станция 3 (orion)](devices/station-3.md): сетевая разведка, проверка DNS-метода ([#25](https://github.com/Marker284/yandex-station-extended/pull/25), [#24](https://github.com/Marker284/yandex-station-extended/issues/24)) |
+| [@denisbut1212](https://github.com/denisbut1212) | [DNS на OpenWrt](start/root.md#dns-unlock) только для доменов активации (Podkop), команды отката ([#26](https://github.com/Marker284/yandex-station-extended/pull/26)) |
+| [@garenal1v3](https://github.com/garenal1v3) | [Директивы и capabilities](internals/directives.md): legacy и typed, `PayloadRaw` ([#27](https://github.com/Marker284/yandex-station-extended/pull/27)) |
 
 ## Данные для страниц моделей
 
