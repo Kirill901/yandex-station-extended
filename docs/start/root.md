@@ -420,7 +420,8 @@
 4. Прошивка создаёт маркеры `/data/quasar/activate_adb_quasmodrom` и
    `/data/quasar/activate_network_adb` и запускает `adbd` на порту **5555**.
 5. При каждой загрузке `onboot.sh` вызывает `activate_adb.sh check`: пока маркеры на месте,
-   ADB поднимается сам — DNS больше не нужен.
+   ADB поднимается сам — DNS больше не нужен. На Мини 3 это не так: после возврата DNS ADB
+   выключается, см. [раздел про возврат DNS](retail-ca-mini3.md#adb-after-dns).
 
 ---
 
