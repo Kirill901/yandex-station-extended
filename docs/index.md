@@ -55,6 +55,7 @@
 | Лайт 2 (Plum) | ✅ [retail CA из factory](start/retail-ca.md) |
 | Станция 1-го поколения | ✅ [AliceBridge](start/root-android.md#station-1) |
 | Станция Макс | ❌ Android |
+| JBL Link Music (с Алисой) | ✅ [ADB по USB на старте](start/root-jbl-link-music.md) |
 
 Подробнее — в [каталоге устройств](devices/index.md#support-matrix).
 
