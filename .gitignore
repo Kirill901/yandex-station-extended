@@ -5,3 +5,7 @@ __pycache__/
 *$py.class
 .cache/
 .DS_Store
+
+# сборка редактора (editor/ → npm run build)
+docs/assets/editor/
+editor/node_modules/
