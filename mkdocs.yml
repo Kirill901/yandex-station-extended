@@ -134,11 +134,11 @@ nav:
       - Колонка без Яндекса: recipes/standalone.md
   - Устройства:
       - devices/index.md
-      - Станция 3: devices/station-3.md
       - Станция Лайт (Micro): devices/station-lite.md
       - Станция Лайт 2 (Plum): devices/station-lite2.md
       - Станция Мини 3 (Bergamot): devices/station-mini3.md
       - Станция Мини 3 Про (Pickle): devices/station-mini3-pro.md
+      - Станция 3 (Orion): devices/station-3.md
       - Станция Мини 2: devices/station-mini2.md
       - Станция Мини (1 пок): devices/station-mini.md
       - Станция Миди (Cucumber): devices/station-midi.md

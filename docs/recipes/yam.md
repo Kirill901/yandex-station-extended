@@ -293,7 +293,7 @@ enabled = false
 
 ## BetterYAM { #betteryam }
 
-[BetterYAM](https://github.com/Yandex-Station-Universal-Repo/BetterYAM/tree/betteryam) взял
+[BetterYAM](https://github.com/Yandex-Station-Universal-Repo/BetterYAM) взял
 за основу YAM, но у каждой модели свой демон (`betteryamd`) со своим API и Web UI. Пакеты
 `.yap`, Lua API и CLI совместимы с YAM. CLI называется `byam`, `yam` ставится как псевдоним.
 
@@ -303,10 +303,10 @@ enabled = false
 нет, и установка завершается ошибкой.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Yandex-Station-Universal-Repo/BetterYAM/refs/heads/betteryam/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/Yandex-Station-Universal-Repo/BetterYAM/refs/heads/main/install.sh | sh
 ```
 
-Windows: `irm https://raw.githubusercontent.com/Yandex-Station-Universal-Repo/BetterYAM/refs/heads/betteryam/install.ps1 | iex`.
+Windows: `irm https://raw.githubusercontent.com/Yandex-Station-Universal-Repo/BetterYAM/refs/heads/main/install.ps1 | iex`.
 Удаление — `sh -s -- --uninstall`, как у YAM. Демон ставится в `/data/quazar/betteryam` и
 слушает `8099` на LAN-адресе колонки. Автозапуска нет — как и у YAM, см. [выше](#autostart).
 
@@ -322,8 +322,8 @@ Windows: `irm https://raw.githubusercontent.com/Yandex-Station-Universal-Repo/Be
 
 Неподдержанные функции возвращают понятную ошибку, а в `GET /device` у них
 `capabilities: false`. Подробности и чек-лист для новой модели — в
-[DEPLOYMENT.md](https://github.com/Yandex-Station-Universal-Repo/BetterYAM/blob/betteryam/docs/DEPLOYMENT.md)
-и [ADDING_DEVICES.md](https://github.com/Yandex-Station-Universal-Repo/BetterYAM/blob/betteryam/docs/ADDING_DEVICES.md).
+[DEPLOYMENT.md](https://github.com/Yandex-Station-Universal-Repo/BetterYAM/blob/main/docs/DEPLOYMENT.md)
+и [ADDING_DEVICES.md](https://github.com/Yandex-Station-Universal-Repo/BetterYAM/blob/main/docs/ADDING_DEVICES.md).
 
 ## Чем отличается от `yse`
 

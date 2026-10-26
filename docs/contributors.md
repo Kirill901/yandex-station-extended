@@ -17,6 +17,10 @@
 | [@initialfox](https://github.com/initialfox) | [root с Android через AliceBridge](start/root-android.md), root Станции 1 ([#10](https://github.com/Marker284/yandex-station-extended/pull/10), [#14](https://github.com/Marker284/yandex-station-extended/pull/14), [#19](https://github.com/Marker284/yandex-station-extended/pull/19)) |
 | [@Kastle86](https://github.com/Kastle86) | [LED-панель Станции 2](devices/station-2.md#led) и карта светодиодов ([#11](https://github.com/Marker284/yandex-station-extended/pull/11)) |
 | [@amirilivice](https://github.com/amirilivice) | [quasard](recipes/llm.md#quasard) — свой сервер вместо облака Алисы ([#12](https://github.com/Marker284/yandex-station-extended/pull/12)) |
+| [@novff](https://github.com/novff) | [LED-панель Станции 2](devices/station-2.md#led): формат пикселя RGBW, анимации панели и логотипа ([#21](https://github.com/Marker284/yandex-station-extended/pull/21)) |
+| [@skrashevich](https://github.com/skrashevich) | [Quasar Bridge](recipes/llm.md#quasar-bridge) — своя LLM и Home Assistant с облачным голосом Алисы ([#22](https://github.com/Marker284/yandex-station-extended/pull/22)) |
+| [@SCP2609](https://github.com/SCP2609) | ссылка на [BetterYAM](recipes/yam.md#betteryam) ([#23](https://github.com/Marker284/yandex-station-extended/pull/23)) |
+| [@ciphermoth-byte](https://github.com/ciphermoth-byte) | [Станция 3 (orion)](devices/station-3.md): сетевая разведка, проверка DNS-метода ([#25](https://github.com/Marker284/yandex-station-extended/pull/25), [#24](https://github.com/Marker284/yandex-station-extended/issues/24)) |
 
 ## Данные для страниц моделей
 
