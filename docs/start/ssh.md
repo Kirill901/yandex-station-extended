@@ -8,25 +8,29 @@
 Все команды — с компьютера, из клона репозитория
 ([Marker284/yandex-station-extended](https://github.com/Marker284/yandex-station-extended)).
 
+## 1. Закрепите сетевой ADB { #perm-adb }
 
-## 1. Включаем перманентный ADB доступ { #permADB }
+Прошивка поднимает `adbd` на порту **5555**, если при загрузке находит в `/data/quasar`
+маркеры `activate_adb_quasmodrom` и `activate_network_adb` (см.
+[Архитектуру прошивки](../internals/architecture.md)). После root они уже есть, но сброс
+настроек или обновление их удаляют — `chattr +i` защищает файлы от удаления:
 
 ```sh
-mkdir -p /data/quasar
-touch /data/quasar/activate_adb_quasmodrom
-touch /data/quasar/activate_network_adb
-chattr +i /data/quasar/activate_adb_quasmodrom
-chattr +i /data/quasar/activate_network_adb
+adb shell 'mkdir -p /data/quasar &&
+  touch /data/quasar/activate_adb_quasmodrom /data/quasar/activate_network_adb &&
+  chattr +i /data/quasar/activate_adb_quasmodrom /data/quasar/activate_network_adb'
 ```
 
-Проверка после перезагрузки:
+Проверка после перезагрузки колонки:
 
-```adb devices
+```sh
+adb connect 192.168.1.120:5555   # IP вашей колонки
+adb devices
 ```
 
-??? info "Что делает скрипт"
-    Создает файлы которые читает система при загрузке станции, если находит - включает ADB.
-
+!!! note "Мини 3 Про"
+    На Мини 3 Про корень после перезагрузки откатывается, маркеры там не держатся —
+    см. [её страницу](../devices/station-mini3-pro.md).
 
 ## 2. Отключите обновления { #kill-ota }
 
@@ -143,3 +147,12 @@ ssh -p 2222 root@192.168.1.120
 Дальше: **[шаг 3 — пакеты `yse`](packages.md)**.
 
 ---
+
+## Как это устроено
+
+- Корневая ФС `/` — ubifs, смонтирована только для чтения, но dm-verity на ней не включён:
+  после `mount -o remount,rw /` правки сохраняются и переживают перезагрузку.
+- `/data` — ссылка на `/bkupgrade/data` (отдельный раздел, ~87 МБ). Свой софт кладите в `/data/opt`.
+- Скрипты `/etc/init.d/S??*` выполняет `rcS` по алфавиту при загрузке — так работают
+  `S99zdropbear` и другие автозапуски из этой вики.
+- Сброс к заводским настройкам кнопками очищает `/data` — после него шаги 1–3 придётся повторить.
