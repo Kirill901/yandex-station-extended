@@ -55,7 +55,7 @@
 | Мини 3 | ✅ | [retail CA и маркеры](https://hackalice.me/start/retail-ca-mini3/) |
 | Лайт 2 | ✅ | [retail CA из factory](https://hackalice.me/start/retail-ca/) |
 | Станция 1-го поколения | ✅ | [AliceBridge](https://hackalice.me/start/root-android/#station-1) |
-| JBL Link Music (с Алисой) | ✅ | [ADB по USB на старте](https://hackalice.me/start/root-jbl-link-music/) |
+| JBL Link Music, Link Portable (с Алисой) | ✅ | [ADB по USB на старте](https://hackalice.me/start/root-jbl-link-music/) |
 | Мини 3 Про | 🟡 | [только закрепление доступа](https://hackalice.me/devices/station-mini3-pro/) |
 | Станция 3 | ❌ | [DNS-метод закрыт](https://hackalice.me/devices/station-3/) |
 | Станция Макс | ❌ | [Android-платформа](https://hackalice.me/devices/station-max/) |
