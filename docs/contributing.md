@@ -88,4 +88,7 @@ python3 -m venv venv
 ```
 Сайт с live-reload откроется на `http://127.0.0.1:8000`.
 
+Правила оформления текста и pull request'ов — в
+[CONTRIBUTING.md](https://github.com/Marker284/yandex-station-extended/blob/main/CONTRIBUTING.md).
+
 Все, чьи правки и данные вошли в вики, перечислены на странице [Участники](contributors.md).

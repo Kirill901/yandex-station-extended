@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Вики — hackalice.me
+    url: https://hackalice.me
+    about: Инструкции по root, SSH, пакетам и страницы моделей.
+  - name: Чат в Telegram — @hackalice
+    url: https://t.me/hackalice
+    about: Находки, новости и обсуждение проекта.
