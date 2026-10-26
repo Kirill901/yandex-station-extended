@@ -49,6 +49,15 @@ theme:
         icon: material/weather-sunny
         name: Тёмная тема
 
+extra:
+  social:
+    - icon: fontawesome/brands/telegram
+      link: https://t.me/hackalice
+      name: Чат в Telegram
+    - icon: fontawesome/brands/github
+      link: https://github.com/Marker284/yandex-station-extended
+      name: GitHub
+
 extra_javascript:
   - javascripts/toc-tabs.js
 

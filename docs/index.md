@@ -7,6 +7,15 @@
 Открытая вики о том, как получить доступ к умным колонкам Яндекса и что с ними можно
 сделать дальше: SSH, свой софт, USB-периферия, AirPlay, свои звуки. Всё — для своих устройств.
 
+<div class="tg-banner" markdown>
+<span class="tg-banner__icon">:fontawesome-brands-telegram:</span>
+<div class="tg-banner__text" markdown>
+**Чат сообщества в Telegram**<br>
+Вопросы, помощь с root, свежие находки и прошивки — обсуждаем в [@hackalice](https://t.me/hackalice).
+</div>
+[Открыть чат](https://t.me/hackalice){ .md-button .md-button--primary .tg-banner__button }
+</div>
+
 ## С чего начать
 
 1. **[Получение root](start/index.md#root-by-model)** — у каждой модели свой способ, без разборки (~15 минут).
