@@ -78,3 +78,25 @@
   .md-typeset .tg-banner > p { width: 100%; }
   .md-typeset .md-button.tg-banner__button { width: 100%; text-align: center; }
 }
+
+/* GitHub star banner: same layout as the Telegram one, star colours */
+.gh-banner {
+  border-color: rgba(227, 179, 65, .45);
+  background: linear-gradient(120deg, rgba(122, 85, 255, .14), rgba(227, 179, 65, .16));
+}
+.gh-banner .tg-banner__icon {
+  background: #e3b341;
+}
+.md-typeset .gh-banner .md-button.tg-banner__button {
+  background-color: #e3b341;
+  border-color: #e3b341;
+  color: #24292f;
+}
+.md-typeset .gh-banner .md-button.tg-banner__button:hover {
+  background-color: #d29922;
+  border-color: #d29922;
+  color: #24292f;
+}
+.md-typeset .gh-banner .md-button .twemoji {
+  vertical-align: -0.15em;
+}

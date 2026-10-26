@@ -60,6 +60,16 @@
 
 Подробнее — в [каталоге устройств](devices/index.md#support-matrix).
 
+<div class="tg-banner gh-banner" markdown>
+<span class="tg-banner__icon">:fontawesome-solid-star:</span>
+<div class="tg-banner__text" markdown>
+**Поставьте звезду на GitHub**<br>
+Вики ведут энтузиасты в свободное время. Каждая ⭐ показывает, что проект нужен,
+и мотивирует развивать его дальше.
+</div>
+[:fontawesome-brands-github: Поставить звезду](https://github.com/Marker284/yandex-station-extended){ .md-button .md-button--primary .tg-banner__button }
+</div>
+
 ---
 
 Нашли что-то новое? Нажмите ✏️ вверху любой страницы и предложите правку —
