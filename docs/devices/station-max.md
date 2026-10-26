@@ -112,11 +112,18 @@ tee vbmeta vendor zram0 (+ dm-0, dm-1, loop0..7)
 
 ## Что ещё проверить
 
-- Возможность разблокировки загрузчика (fastboot `unlock`), состояние `ro.boot.flash.locked`.
-- Как устроен quasar-APK на Android-платформе (пакет, сервисы).
+- Возможность разблокировки загрузчика. Свойства `ro.boot.flash.locked` на платформе
+  нет: состояние смотрят по `ro.boot.vbmeta.device_state` и `ro.boot.verifiedbootstate`,
+  а отладочный путь заложен в U-Boot env — см.
+  [Макс с Zigbee → Доступ](station-max-zigbee.md#access).
 - Протокол LED-экрана (`quasar_led_screen` / Gowin).
 - Назначение ATBM8881 (эфирное ТВ / IPTV-демукс).
-- Точная модель SoC (по железу из root-контекста).
+
+Ответы, снятые на ревизии `YNDX-00052` (та же платформа и fingerprint) — на странице
+[«Станция Макс с Zigbee»](station-max-zigbee.md): SoC **Amlogic S905X2**
+(`g12a_s905x2_rev35f`), [разметка eMMC](station-max-zigbee.md#partitions),
+[живой скан I2C](station-max-zigbee.md#i2c) и устройство
+[quasar-APK](station-max-zigbee.md#software).
 
 ---
 

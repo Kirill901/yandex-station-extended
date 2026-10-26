@@ -26,7 +26,7 @@ build-профиль `yandexstation_2_tv/127`. Железо и ОС совпад
 | Fingerprint | `Yandex/yandexstation_2/yandexstation_2:9/PPR1.180610.011/5000000896:user/release-keys` |
 | Сборка | `5000000896`, `ro.build.date` — 14 окт. 2026, патч безопасности `2018-08-05` |
 | SoC | **Amlogic S905X2**, ревизия кристалла `g12a_s905x2_rev35f` (`ro.boot.hardware.amlogic_dt_id`), 4× Cortex-A53 (`0xd03`) |
-| GPU | **Mali-G52** (Bifrost, узел DT `/bifrost`, драйвер `mali_kbase`), DVFS 125…850 МГц |
+| GPU | **Mali** (Bifrost, узел DT `/bifrost`, драйвер `mali_kbase`), DVFS 125…850 МГц; модель — см. [ниже](#gpu-model) |
 | ОЗУ | **2 ГБ** (`MemTotal 2038276 kB`) |
 | Хранилище | **eMMC** `mmcblk0` 15 267 840 блоков (≈14.56 ГБ user-area), 21 раздел + `boot0`/`boot1` (по 4 МБ) + `rpmb` |
 | Ядро | Linux **4.9.113** aarch64 (Linaro GCC 6.3.1), `#1 SMP PREEMPT` |
@@ -39,6 +39,18 @@ build-профиль `yandexstation_2_tv/127`. Железо и ОС совпад
 | Управление | `rotary-volume` (поворотное кольцо), `gpio_keypad`, HDMI-CEC |
 | RTC | **PCF8563** (I2C `2-0x51`) |
 | Радио | **Intel** `iwlwifi`/`iwlmvm` по PCIe (`fc700000`, MSI IRQ 64) + BT `btusb`/`btintel` |
+
+!!! note "Модель GPU из дампа не следует { #gpu-model }"
+    Узел `/bifrost`, драйвер `mali_kbase` и таблица DVFS показывают только то, что это
+    Mali архитектуры Bifrost. У **S905X2** (g12a) по документации Amlogic распаян
+    **Mali-G31 MP2** — G52 стоит в S922X (g12b). В первой редакции этой страницы было
+    написано «Mali-G52»; по приведённым данным это не подтверждается. Точную модель
+    снимают на живом устройстве:
+
+    ```sh
+    cat /sys/module/mali_kbase/drivers/platform:mali/*/gpuinfo
+    dmesg | grep -i 'GPU identified'
+    ```
 
 ## Zigbee: как он устроен { #zigbee }
 
